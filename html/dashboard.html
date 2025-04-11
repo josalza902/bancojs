@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>BancoApp - Dashboard</title>
+  <link rel="stylesheet" href="/css/estilos2.css" />
+</head>
+<body class="dashboard-body">
+  <header class="dashboard-header">
+    <img src="imagenes/logo.webp" alt="Logo Banco" class="logo" />
+  </header>
+
+  <main class="dashboard-main">
+    <section class="usuario-info">
+      <p><strong>Nombre:</strong> <span id="nombre-usuario">Cargando...</span></p>
+      <p><strong>Cuenta:</strong> <span id="numero-cuenta">Cargando...</span></p>
+      <p><strong>Saldo:</strong> <span id="saldo">$0.00</span></p>
+    </section>
+
+    <section class="dashboard-botones">
+      <button onclick="window.location.href='servicios.html'">Servicios</button>
+      <button onclick="window.location.href='retirar.html'">Retirar</button>
+      <button onclick="window.location.href='movimientos.html'">Movimientos</button>
+    </section>
+  </main>
+
+  <script src="js/app.js"></script>
+</body>
+</html>

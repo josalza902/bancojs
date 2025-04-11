@@ -1,0 +1,89 @@
+/* Estilos generales */
+body.dashboard-body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f0f2f5;
+    margin: 0;
+    padding: 0;
+    color: #333;
+}
+
+/* Header */
+.dashboard-header {
+    background-color: #2c3e50;
+    padding: 15px 20px;
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.logo {
+    max-height: 50px;
+}
+
+/* Contenido principal */
+.dashboard-main {
+    max-width: 600px;
+    margin: 30px auto;
+    padding: 20px;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.1);
+}
+
+/* Sección de información del usuario */
+.usuario-info {
+    background-color: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 30px;
+}
+
+.usuario-info p {
+    margin: 15px 0;
+    font-size: 16px;
+}
+
+.usuario-info strong {
+    color: #2c3e50;
+    display: inline-block;
+    width: 80px;
+}
+
+#saldo {
+    font-size: 24px;
+    font-weight: bold;
+    color: #27ae60;
+}
+
+/* Botones */
+.dashboard-botones {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+}
+
+.dashboard-botones button {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 12px 0;
+    border-radius: 6px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.dashboard-botones button:hover {
+    background-color: #2980b9;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    .dashboard-botones {
+        grid-template-columns: 1fr;
+    }
+    
+    .dashboard-main {
+        margin: 20px 15px;
+        padding: 15px;
+    }
+}
