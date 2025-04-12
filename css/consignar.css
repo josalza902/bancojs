@@ -1,0 +1,59 @@
+body {
+    background-color: #121212;
+    font-family: sans-serif;
+    color: #333;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+  
+  .contenedor-principal {
+    text-align: center;
+  }
+  
+  .logo {
+    width: 100px;
+    margin-bottom: 20px;
+  }
+  
+  .tarjeta {
+    background-color: #fff;
+    padding: 30px 20px;
+    border-radius: 20px;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+    width: 300px;
+    margin: 0 auto;
+  }
+  
+  .tarjeta input {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: none;
+    border-radius: 10px;
+    background-color: #f0f0f0;
+  }
+  
+  .botones-operacion {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+  }
+  
+  .botones-operacion button {
+    flex: 1;
+    background-color: #ccc;
+    border: none;
+    padding: 10px;
+    border-radius: 10px;
+    text-transform: lowercase;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+  
+  .botones-operacion button:hover {
+    background-color: #bbb;
+  }
+  

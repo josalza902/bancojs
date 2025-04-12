@@ -1,159 +1,279 @@
-// IndexedDB config
+// === BASE DE DATOS === //
 let db;
 
-const request = indexedDB.open('bancoDB', 1);
-
+const request = indexedDB.open("bancoDB", 1);
 request.onupgradeneeded = function (event) {
   db = event.target.result;
-  const store = db.createObjectStore('movimientos', {
-    keyPath: 'id',
-    autoIncrement: true,
-  });
-  store.createIndex('tipo', 'tipo', { unique: false });
+
+  if (!db.objectStoreNames.contains("usuarios")) {
+    db.createObjectStore("usuarios", { keyPath: "numeroCuenta" });
+  }
+
+  if (!db.objectStoreNames.contains("movimientos")) {
+    db.createObjectStore("movimientos", { autoIncrement: true });
+  }
 };
 
 request.onsuccess = function (event) {
   db = event.target.result;
-  initApp();
+  iniciarApp();
 };
 
-request.onerror = function (event) {
-  console.error('Error al abrir IndexedDB', event);
-};
+// === FUNCIONES === //
 
-// Iniciar funciones según la vista
-function initApp() {
-  const path = window.location.pathname;
-
-  if (path.includes('index.html')) {
-    initLogin();
-  } else if (path.includes('html/dashboard.html')) {
-    cargarMovimientos();
-    document.getElementById('logout-btn')?.addEventListener('click', () => {
-      window.location.href = '../index.html';
-    });
-    document.getElementById('agregar-btn')?.addEventListener('click', () => {
-      window.location.href = 'movimiento.html';
-    });
-    document.getElementById('exportar-btn')?.addEventListener('click', exportarJSON);
-  } else if (path.includes('html/movimiento.html')) {
-    initFormularioMovimiento();
-  }
+function guardarMovimiento(movimiento) {
+  const transaccion = db.transaction("movimientos", "readwrite");
+  const store = transaccion.objectStore("movimientos");
+  store.add(movimiento);
 }
 
-// ----------------------------
-// INICIO DE SESIÓN
-// ----------------------------
-function initLogin() {
-  const form = document.getElementById('login-form');
-  if (form) {
-    form.addEventListener('submit', function (e) {
-      e.preventDefault();
-      const usuario = document.getElementById('usuario').value;
-      const password = document.getElementById('password').value;
-
-      if (!usuario || !password) {
-        alert('Por favor completa todos los campos.');
-        return;
-      }
-
-      // Validación simulada
-      if (usuario === 'admin' && password === '1234') {
-        window.location.href = 'html/dashboard.html';
-      } else {
-        alert('Usuario o contraseña incorrectos');
-      }
-    });
-  }
+function obtenerFechaHoy() {
+  const hoy = new Date();
+  return hoy.toLocaleDateString("es-CO");
 }
 
-// ----------------------------
-// FORMULARIO NUEVO MOVIMIENTO
-// ----------------------------
-function initFormularioMovimiento() {
-  const form = document.getElementById('form-movimiento');
-  form.addEventListener('submit', function (e) {
-    e.preventDefault();
+function generarNumeroCuenta() {
+  return Math.floor(100000000 + Math.random() * 900000000).toString();
+}
 
-    const tipo = document.getElementById('tipo').value;
-    const monto = parseFloat(document.getElementById('monto').value);
-    const descripcion = document.getElementById('descripcion').value;
+function crearCuenta(documento, nombre, clave) {
+  const numeroCuenta = generarNumeroCuenta();
+  const usuario = {
+    numeroCuenta,
+    documento,
+    nombre,
+    clave,
+    saldo: 0
+  };
 
-    if (!tipo || !monto || !descripcion) {
-      alert('Completa todos los campos');
-      return;
+  const transaccion = db.transaction("usuarios", "readwrite");
+  const store = transaccion.objectStore("usuarios");
+  const request = store.add(usuario);
+
+  request.onsuccess = () => {
+    alert(`Cuenta creada con éxito. Su número de cuenta es ${numeroCuenta}`);
+    window.location.href = "/html/index.html";
+  };
+
+  request.onerror = () => {
+    alert("Error al crear la cuenta. Verifique los datos.");
+  };
+}
+
+function consignar(numeroCuenta, valor) {
+  const transaccion = db.transaction("usuarios", "readwrite");
+  const store = transaccion.objectStore("usuarios");
+  const request = store.get(numeroCuenta);
+
+  request.onsuccess = function () {
+    const usuario = request.result;
+    if (!usuario) return alert("Cuenta no encontrada");
+    if (valor <= 0) return alert("Valor inválido");
+
+    usuario.saldo += valor;
+    store.put(usuario);
+
+    guardarMovimiento({
+      tipo: "consignación",
+      valor,
+      fecha: obtenerFechaHoy(),
+      numeroCuenta
+    });
+
+    alert("Consignación exitosa");
+  };
+}
+
+function retirar(numeroCuenta, clave, valor) {
+  const transaccion = db.transaction("usuarios", "readwrite");
+  const store = transaccion.objectStore("usuarios");
+  const request = store.get(numeroCuenta);
+
+  request.onsuccess = function () {
+    const usuario = request.result;
+    if (!usuario) return alert("Cuenta no encontrada");
+    if (usuario.clave !== clave) return alert("Clave incorrecta");
+    if (valor > usuario.saldo) return alert("Saldo insuficiente");
+
+    usuario.saldo -= valor;
+    store.put(usuario);
+
+    guardarMovimiento({
+      tipo: "retiro",
+      valor,
+      fecha: obtenerFechaHoy(),
+      numeroCuenta
+    });
+
+    alert("Retiro exitoso");
+  };
+}
+
+function pagarServicio(numeroCuenta, clave, tipoServicio, valor, referencia) {
+  const transaccion = db.transaction("usuarios", "readwrite");
+  const store = transaccion.objectStore("usuarios");
+  const request = store.get(numeroCuenta);
+
+  request.onsuccess = function () {
+    const usuario = request.result;
+    if (!usuario) return alert("Cuenta no encontrada");
+    if (usuario.clave !== clave) return alert("Clave incorrecta");
+    if (valor > usuario.saldo) return alert("Saldo insuficiente");
+
+    usuario.saldo -= valor;
+    store.put(usuario);
+
+    guardarMovimiento({
+      tipo: `pago ${tipoServicio}`,
+      valor,
+      fecha: obtenerFechaHoy(),
+      numeroCuenta,
+      referencia
+    });
+
+    alert("Pago realizado con éxito");
+  };
+}
+
+function mostrarTransacciones() {
+  const contenedor = document.getElementById("lista-movimientos");
+  if (!contenedor) return;
+  contenedor.innerHTML = "";
+
+  const transaccion = db.transaction("movimientos", "readonly");
+  const store = transaccion.objectStore("movimientos");
+
+  const movimientos = [];
+  store.openCursor().onsuccess = function (e) {
+    const cursor = e.target.result;
+    if (cursor) {
+      movimientos.push(cursor.value);
+      cursor.continue();
+    } else {
+      movimientos.sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
+
+      movimientos.forEach((mov) => {
+        const fila = document.createElement("div");
+        fila.classList.add("movimiento");
+
+        const tipo = mov.tipo || "-";
+        const valor = `$${Number(mov.valor).toLocaleString("es-CO")}`;
+        const fecha = mov.fecha || "-";
+        const cuenta = mov.numeroCuenta || "-";
+
+        fila.innerHTML = `
+          <span>${tipo}</span>
+          <span>${valor}</span>
+          <span>${fecha}</span>
+          <span>${cuenta}</span>
+        `;
+
+        contenedor.appendChild(fila);
+      });
+    }
+  };
+}
+
+function iniciarSesion(e) {
+  e.preventDefault();
+
+  const numeroCuenta = document.getElementById("cuenta-login").value.trim();
+  const clave = document.getElementById("clave-login").value.trim();
+
+  const transaccion = db.transaction("usuarios", "readonly");
+  const store = transaccion.objectStore("usuarios");
+  const request = store.get(numeroCuenta);
+
+  request.onsuccess = function () {
+    const usuario = request.result;
+    if (!usuario) return alert("Cuenta no encontrada");
+    if (usuario.clave !== clave) return alert("Clave incorrecta");
+
+    localStorage.setItem("usuarioActivo", JSON.stringify(usuario));
+    window.location.href = "html/dashboard.html";
+  };
+}
+
+function iniciarApp() {
+  const pathname = window.location.pathname;
+
+  // Index (login)
+  if (pathname.includes("index.html") || pathname.endsWith("/")) {
+    const btnIngresar = document.getElementById("btn-ingresar");
+    if (btnIngresar) {
+      btnIngresar.addEventListener("click", iniciarSesion);
     }
 
-    const nuevoMovimiento = {
-      tipo,
-      monto,
-      descripcion,
-      fecha: new Date().toISOString(),
-    };
+    const btnCrear = document.getElementById("btn-ir-crear-cuenta");
+    if (btnCrear) {
+      btnCrear.addEventListener("click", () => {
+        window.location.href = "html/crear_cuenta.html";
+      });
+    }
+  }
 
-    const tx = db.transaction(['movimientos'], 'readwrite');
-    const store = tx.objectStore('movimientos');
-    store.add(nuevoMovimiento);
+  // Crear cuenta
+  if (pathname.includes("crear_cuenta.html")) {
+    const btn = document.getElementById("btn-crear");
+    if (btn) {
+      btn.addEventListener("click", () => {
+        const documento = document.getElementById("documento").value;
+        const nombre = document.getElementById("nombre").value;
+        const clave = document.getElementById("clave").value;
+        crearCuenta(documento, nombre, clave);
+      });
+    }
+  }
 
-    tx.oncomplete = () => {
-      window.location.href = 'dashboard.html';
-    };
+  // Dashboard
+  if (pathname.includes("dashboard.html")) {
+    const datosUsuario = JSON.parse(localStorage.getItem("usuarioActivo"));
+    if (datosUsuario) {
+      document.getElementById("numero-cuenta-span").textContent = datosUsuario.numeroCuenta;
+      document.getElementById("usuario-span").textContent = datosUsuario.nombre;
+      document.getElementById("saldo-span").textContent = `$${Number(datosUsuario.saldo).toLocaleString("es-CO")}`;
+    }
 
-    tx.onerror = () => {
-      alert('Error al guardar el movimiento.');
-    };
-  });
-}
+    document.getElementById("btn-servicios").onclick = () => window.location.href = "servicios.html";
+    document.getElementById("btn-transacciones").onclick = () => window.location.href = "transacciones.html";
+    document.getElementById("btn-consignar").onclick = () => window.location.href = "consignar.html";
+  }
 
-// ----------------------------
-// CARGAR MOVIMIENTOS Y SALDO
-// ----------------------------
-function cargarMovimientos() {
-  const lista = document.getElementById('lista-movimientos');
-  const saldoSpan = document.getElementById('saldo');
+  // Servicios
+  if (pathname.includes("servicios.html")) {
+    document.querySelectorAll(".tarjeta-servicio").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const tipo = btn.getAttribute("data-servicio");
+        const referencia = prompt("Ingrese la referencia del servicio");
+        const valor = parseFloat(prompt("Ingrese el valor a pagar"));
+        const cuenta = prompt("Ingrese su número de cuenta");
+        const clave = prompt("Ingrese su clave");
 
-  const tx = db.transaction(['movimientos'], 'readonly');
-  const store = tx.objectStore('movimientos');
-  const request = store.getAll();
-
-  request.onsuccess = () => {
-    const movimientos = request.result;
-    let saldo = 0;
-
-    if (lista) lista.innerHTML = '';
-
-    movimientos.forEach((mov) => {
-      const li = document.createElement('li');
-      li.innerHTML = `
-        <strong>${mov.tipo === 'ingreso' ? '+' : '-'}</strong> $${mov.monto.toFixed(2)} – 
-        ${mov.descripcion} <small>(${new Date(mov.fecha).toLocaleDateString()})</small>
-      `;
-      if (lista) lista.appendChild(li);
-      saldo += mov.tipo === 'ingreso' ? mov.monto : -mov.monto;
+        if (tipo && referencia && valor && cuenta && clave) {
+          pagarServicio(cuenta, clave, tipo, valor, referencia);
+        }
+      });
     });
+  }
 
-    if (saldoSpan) saldoSpan.textContent = `$${saldo.toFixed(2)}`;
-  };
-}
+  // Transacciones
+  if (pathname.includes("transacciones.html")) {
+    mostrarTransacciones();
+  }
 
-// ----------------------------
-// EXPORTAR A JSON
-// ----------------------------
-function exportarJSON() {
-  const tx = db.transaction(['movimientos'], 'readonly');
-  const store = tx.objectStore('movimientos');
-  const request = store.getAll();
+  // Consignar/Retirar
+  if (pathname.includes("consignar.html")) {
+    document.getElementById("btn-consignar").onclick = () => {
+      const cuenta = document.getElementById("numero-cuenta").value;
+      const valor = parseFloat(document.getElementById("valor").value);
+      consignar(cuenta, valor);
+    };
 
-  request.onsuccess = () => {
-    const data = request.result;
-    const json = JSON.stringify(data, null, 2);
-    const blob = new Blob([json], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'movimientos.json';
-    a.click();
-    URL.revokeObjectURL(url);
-  };
+    document.getElementById("btn-retirar").onclick = () => {
+      const cuenta = document.getElementById("numero-cuenta").value;
+      const clave = document.getElementById("clave").value;
+      const valor = parseFloat(document.getElementById("valor").value);
+      retirar(cuenta, clave, valor);
+    };
+  }
 }

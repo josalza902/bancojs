@@ -1,28 +1,26 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="css/estilos.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Inicio - Banco</title>
+  <link rel="stylesheet" href="../css/index.css" />
 </head>
 <body>
-    <div class="container">
-        <div class="left-panel">
-          <img src="imagenes/bitcoin.png" alt="Bitcoin">
-        </div>
-        <div class="right-panel">
-          <img class="logo" src="imagenes/logo.webp" alt="Logo ACME Bank">
-          <form id="login-form">
-            <label for="usuario">usuario</label>
-            <input type="text" id="usuario">
-            <label for="password">contraseña</label>
-            <input type="password" id="password">
-            <button type="submit">ingresar</button>
-          </form>
-        </div>
-      </div>
-      
-      <script src="js/app.js"></script>
+  <div class="contenedor-principal">
+    <img src="../imagenes/logo.webp" alt="Logo Banco" class="logo" />
+
+    <div class="tarjeta">
+      <h2>Bienvenido</h2>
+      <input type="text" id="cuenta-login" placeholder="Número de cuenta" />
+      <input type="password" id="clave-login" placeholder="Clave" />
+      <button id="btn-ingresar">Ingresar</button>
+      <button id="btn-ir-crear-cuenta" style="margin-top: 10px; background-color: #ccc; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">
+        Crear cuenta
+      </button>
+    </div>
+  </div>
+
+  <script src="../js/app.js"></script>
 </body>
 </html>

@@ -1,0 +1,85 @@
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #121212;
+    font-family: Arial, sans-serif;
+    color: #ffffff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+  }
+  
+  .contenedor-principal {
+    text-align: center;
+    width: 100%;
+    max-width: 500px;
+    padding: 20px;
+  }
+  
+  .logo {
+    width: 100px;
+    margin-bottom: 30px;
+  }
+  
+  .contenedor-servicios {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .tarjeta-servicio {
+    background-color: #ffffff;
+    color: #333;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.3);
+    cursor: pointer;
+    text-transform: lowercase;
+    font-weight: bold;
+    transition: transform 0.2s ease, background-color 0.2s ease;
+  }
+  
+  .tarjeta-servicio:hover {
+    background-color: #eeeeee;
+    transform: scale(1.02);
+  }
+  
+  .vista-pago {
+    margin-top: 30px;
+    background-color: #ffffff;
+    color: #000;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.3);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    text-align: left;
+  }
+  
+  .vista-pago input {
+    padding: 10px;
+    border: none;
+    border-radius: 10px;
+    background-color: #f0f0f0;
+  }
+  
+  .vista-pago button {
+    background-color: #555;
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 10px;
+    cursor: pointer;
+    text-transform: lowercase;
+  }
+  
+  .vista-pago button:hover {
+    background-color: #777;
+  }
+  
+  .oculto {
+    display: none;
+  }
+  

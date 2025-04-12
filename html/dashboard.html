@@ -1,30 +1,36 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>BancoApp - Dashboard</title>
-  <link rel="stylesheet" href="/css/estilos2.css" />
+  <meta charset="UTF-8">
+  <title>Dashboard</title>
+  <link rel="stylesheet" href="../css/dashboard.css">
 </head>
-<body class="dashboard-body">
-  <header class="dashboard-header">
-    <img src="imagenes/logo.webp" alt="Logo Banco" class="logo" />
-  </header>
+<body>
+  <div class="contenedor-principal">
+    <img src="../imagenes/logo.webp" alt="Logo del banco" class="logo">
 
-  <main class="dashboard-main">
-    <section class="usuario-info">
-      <p><strong>Nombre:</strong> <span id="nombre-usuario">Cargando...</span></p>
-      <p><strong>Cuenta:</strong> <span id="numero-cuenta">Cargando...</span></p>
-      <p><strong>Saldo:</strong> <span id="saldo">$0.00</span></p>
-    </section>
+    <div class="tarjeta-info" id="info-usuario">
+      <div class="dato">
+        <label>Número de cuenta:</label>
+        <span id="dashboard-cuenta">---</span>
+      </div>
+      <div class="dato">
+        <label>Nombre:</label>
+        <span id="dashboard-nombre">---</span>
+      </div>
+      <div class="dato">
+        <label>Saldo:</label>
+        <span id="dashboard-saldo">---</span>
+      </div>
+    </div>
 
-    <section class="dashboard-botones">
-      <button onclick="window.location.href='servicios.html'">Servicios</button>
-      <button onclick="window.location.href='retirar.html'">Retirar</button>
-      <button onclick="window.location.href='movimientos.html'">Movimientos</button>
-    </section>
-  </main>
+    <div class="contenedor-botones">
+      <button class="btn-dashboard" id="btn-servicios">servicios</button>
+      <button class="btn-dashboard" id="btn-transacciones">transacciones</button>
+      <button class="btn-dashboard" id="btn-consignar&retirar">consignar/retirar</button>
+    </div>
+  </div>
 
-  <script src="js/app.js"></script>
+  <script src="../js/app.js"></script>
 </body>
 </html>

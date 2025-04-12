@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Servicios</title>
+  <link rel="stylesheet" href="../css/servicios.css">
+</head>
+<body>
+  <div class="contenedor-principal">
+    <img src="../imagenes/logo.webp" alt="Logo del banco" class="logo">
+
+    <div class="contenedor-servicios">
+      <div class="tarjeta-servicio" data-servicio="energía">
+        <p>energía</p>
+      </div>
+      <div class="tarjeta-servicio" data-servicio="agua">
+        <p>agua</p>
+      </div>
+      <div class="tarjeta-servicio" data-servicio="gas">
+        <p>gas</p>
+      </div>
+    </div>
+
+    <div class="vista-pago oculto" id="vista-pago-servicio">
+      <h2 id="titulo-servicio">servicio</h2>
+      <input type="text" id="referencia-servicio" placeholder="Referencia del servicio" />
+      <input type="number" id="valor-servicio" placeholder="Valor a pagar" />
+      <button id="btn-pagar-servicio">pagar</button>
+      <button id="btn-volver-servicio">volver</button>
+    </div>
+  </div>
+
+  <script src="../js/app.js"></script>
+</body>
+</html>

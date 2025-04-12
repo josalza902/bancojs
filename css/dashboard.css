@@ -1,0 +1,71 @@
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #1e1e1e;
+    font-family: 'Segoe UI', sans-serif;
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+  
+  .contenedor-principal {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .logo {
+    width: 150px;
+    margin-bottom: 30px;
+  }
+  
+  .tarjeta-info {
+    background-color: #fff;
+    color: #000;
+    border-radius: 20px;
+    padding: 25px 40px;
+    width: 350px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+    margin-bottom: 30px;
+  }
+  
+  .dato {
+    display: flex;
+    justify-content: space-between;
+    font-size: 16px;
+  }
+  
+  .dato label {
+    font-weight: bold;
+  }
+  
+  .dato span {
+    font-style: italic;
+  }
+  
+  .contenedor-botones {
+    display: flex;
+    gap: 20px;
+  }
+  
+  .btn-dashboard {
+    background-color: #444;
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 12px;
+    text-transform: lowercase;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .btn-dashboard:hover {
+    background-color: #666;
+  }
+  
